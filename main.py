@@ -9,11 +9,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Register API routes
-app.include_router(products.router, prefix="/api", tags=["products"])
-app.include_router(outlets.router, prefix="/api", tags=["outlets"])
+app.include_router(products.router, prefix="/api", tags=["Products"])
+app.include_router(outlets.router, prefix="/api", tags=["Outlets"])
 
-# Add root route to avoid 404
 @app.get("/", response_class=HTMLResponse)
 async def root():
     return """
