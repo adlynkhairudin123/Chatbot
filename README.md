@@ -185,6 +185,7 @@ Use the endpoints:
   /api/products?query=your+question
   /api/outlets?query=your+question
 ````
+<img width="1918" height="285" alt="image" src="https://github.com/user-attachments/assets/de3c86e6-fb5f-4601-bd92-6e039bc12661" />
 
 ---
 
