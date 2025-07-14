@@ -1,145 +1,202 @@
-Great! Here's a clean and professional `README.md` you can include in your FastAPI project repo for **Part 4: Custom API & RAG Integration**:
+## ✅ Part 1: GitHub Repository (Public, No Secrets)
+
+* **Repo URL**:
+  👉 [https://github.com/adlynkhairudin123/Chatbot](https://github.com/adlynkhairudin123/Chatbot)
+
+* `.env` file is **excluded** using `.gitignore`.
 
 ---
 
-## 🧠 ZUS Chatbot — Custom API & RAG Integration
+## ✅ Part 2: Hosted Demo (Render)
 
-This FastAPI project implements two smart retrieval endpoints using Retrieval-Augmented Generation (RAG) and Text-to-SQL, focused on ZUS Coffee's product and outlet information.
+* **Render URL (Live API)**:
+  👉 [https://adlyns-mindhive-chatbot.onrender.com](https://adlyns-mindhive-chatbot.onrender.com)
+
+* Available endpoints:
+
+  * `/api/products?query=your+question`
+  * `/api/outlets?query=your+question`
 
 ---
 
-### 📌 Endpoints
+## ✅ Part 3: README.md (Add this to your repo root)
 
-#### 1. `/api/products?query=...`
+````markdown
+# 🧠 ZUS Coffee Chatbot (Mindhive Technical Assessment)
 
-**Purpose:**
-Answers product-related questions (specifically Drinkware) using a vector store and AI summarization.
+A FastAPI-based chatbot that provides:
+- Product recommendations using Retrieval-Augmented Generation (RAG)
+- Outlet information using Text-to-SQL (SQLite)
+- Memory-enabled local chatbot conversation
 
-**Tech Stack:**
+Hosted on Render: [Live API](https://adlyns-mindhive-chatbot.onrender.com)
 
-* 🧠 Vector DB: FAISS
-* 🔍 Embedding: `sentence-transformers/all-MiniLM-L6-v2`
-* 🗣️ LLM: Local GPT-2 using HuggingFace pipeline
+---
 
-**Example Query:**
+## 🚀 Setup & Run Instructions
 
-```
-GET /api/products?query=Do you have a ZUS tumbler?
-```
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/adlynkhairudin123/Chatbot
+   cd Chatbot
+````
 
-**Response:**
+2. **Install dependencies**
 
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run the FastAPI app**
+
+   ```bash
+   uvicorn main:app --reload --port 10000
+   ```
+
+4. **Access endpoints**
+
+   * [http://127.0.0.1:10000/api/products?query=Do+you+have+ZUS+tumbler](http://127.0.0.1:10000/api/products?query=Do+you+have+ZUS+tumbler)
+   * [http://127.0.0.1:10000/api/outlets?query=Outlets+in+Selangor](http://127.0.0.1:10000/api/outlets?query=Outlets+in+Selangor)?
+
+---
+
+## 🧱 Architecture Overview
+
+### Main Features:
+
+* `FastAPI` backend for API routing
+* `LangChain` for both:
+
+  * RAG (Product Q\&A via FAISS + local LLM)
+  * Text2SQL for outlet queries on SQLite
+* Local LLM: `sshleifer/tiny-gpt2` via HuggingFace
+* Embeddings: `sentence-transformers/all-MiniLM-L6-v2`
+* Memory-based CLI chatbot (`part1_seqConv.py`)
+
+### Key Trade-offs:
+
+* 🧠 Local LLMs are lightweight but less powerful than cloud APIs
+* 🪄 SQLite is used for simplicity (for demo purposes)
+* 🏗️ Modular code for each chatbot component
+
+````
+
+---
+
+## ✅ Part 4: Documentation (Add this to `/docs/API.md`)
+
+```markdown
+# 📚 API Specification
+
+## 🔹 GET /api/products
+
+**Description**: RAG-based endpoint using FAISS + LLM
+
+**Query Params**:
+- `query` (str): A user question about ZUS drinkware
+
+**Example**:
+````
+
+GET /api/products?query=Do you have ZUS tumbler
+
+````
+
+**Response**:
 ```json
 {
-  "query": "Do you have a ZUS tumbler?",
-  "answer": "ZUS All Day Cup is one of the available tumbler products..."
+  "query": "Do you have ZUS tumbler",
+  "answer": "Yes, we offer the ZUS All-Can Tumbler and other options."
 }
-```
-
-**Failure Modes:**
-
-* Empty query
-* No relevant documents
+````
 
 ---
 
-#### 2. `/api/outlets?query=...`
+## 🔹 GET /api/outlets
 
-**Purpose:**
-Translates natural language queries into SQL to retrieve outlet information.
+**Description**: Text-to-SQL endpoint using SQLite
 
-**Tech Stack:**
+**Query Params**:
 
-* 🗃 SQLite database (`outlets.db`)
-* 🧠 Custom keyword-matching logic to simulate Text2SQL
+* `query` (str): Question about outlet count, location, etc.
 
-**Example Queries:**
+**Examples**:
 
 ```
-GET /api/outlets?query=List all outlets in Selangor
-GET /api/outlets?query=How many outlets are on the moon?
+GET /api/outlets?query=How many outlets?
+GET /api/outlets?query=Outlets in Selangor?
 ```
 
-**Response (Success):**
+**Response**:
 
 ```json
 {
-  "query": "List all outlets in Selangor",
+  "query": "Outlets in Selangor?",
   "results": [
-    {"id": 1, "name": "ZUS Coffee – AEON Mall", "state": "Kuala Lumpur / Selangor", ...}
+    {
+      "id": 1,
+      "name": "ZUS Coffee – Subang Jaya",
+      "state": "Kuala Lumpur / Selangor",
+      ...
+    }
   ]
 }
 ```
 
-**Response (Failure):**
+---
 
-```json
-{
-  "query": "How many outlets are on the moon?",
-  "answer": "No outlets found matching that location."
-}
+## 💥 Error Handling
+
+| Error                  | Response                               |
+| ---------------------- | -------------------------------------- |
+| Missing query param    | `{"error": "Empty query provided."}`   |
+| SQL injection detected | `{"error": "Invalid input detected."}` |
+| Internal errors        | `{"error": "Server error: ... "}`      |
+
 ```
 
 ---
 
-### 📂 Project Structure
+## ✅ Part 5: Flow Diagrams / Screenshots
+
+### 🧭 High-Level Flow Diagram
 
 ```
-api/
-├── main.py                  # FastAPI app entry point
-├── routes/
-│   ├── products.py          # /products endpoint
-│   └── outlets.py           # /outlets endpoint
-├── utils/
-│   ├── faiss_index/         # Pre-built FAISS vector store
-│   └── outlets.db           # SQLite database of outlets
-test_chatbot.py              # Endpoint tester script
-README.md                    # Project overview
-```
+
+\[User Query]
+|
+v
+┌─────────────┐
+│ FastAPI App │
+└────┬────────┘
+│
+┌────▼────┐       ┌──────────────────┐
+│ /products│────▶│ RAG Chain (FAISS + LLM) │
+└──────────┘       └──────────────────┘
+│
+┌────▼────┐       ┌────────────────────┐
+│ /outlets│────▶│ SQLite Text2SQL Logic │
+└──────────┘       └────────────────────┘
+
+````
 
 ---
 
-### ✅ How to Run
+### 🖼️ Screenshot:
+Part 1: <img width="1612" height="300" alt="Screenshot 2025-07-14 224531" src="https://github.com/user-attachments/assets/c96dda84-1170-4999-b011-70bf8944f983" />
 
-1. **Install dependencies**
+Part 2: <img width="1145" height="309" alt="Screenshot 2025-07-14 225712" src="https://github.com/user-attachments/assets/be22102e-79fd-418e-aacc-698b65db53dd" />
 
-```bash
-pip install -r requirements.txt
-```
+Part 3: <img width="1177" height="383" alt="Screenshot 2025-07-14 225918" src="https://github.com/user-attachments/assets/5d263011-aee1-4dc3-a631-23dd78c004b9" />
 
-2. **Run the API**
+```plaintext
+✅ ZUS Coffee Chatbot API is Running!
 
-```bash
-uvicorn api.main:app --reload
-```
+Use the endpoints:
 
-3. **Test using script**
-
-```bash
-python test_chatbot.py
-```
+  /api/products?query=your+question
+  /api/outlets?query=your+question
+````
 
 ---
 
-### 📘 Sample Transcript (from `test_chatbot.py`)
-
-* `/products` success ✅
-* `/outlets` success ✅
-* `/products` empty query ❌
-* `/outlets` invalid location ❌
-
----
-
-### 📦 Deliverables Summary
-
-| Item                                         | Status |
-| -------------------------------------------- | ------ |
-| ✅ `/products` endpoint with FAISS + GPT-2    |        |
-| ✅ `/outlets` endpoint with SQLite + Text2SQL |        |
-| ✅ Test script with 4 scenarios               |        |
-| ✅ OpenAPI schema auto-generated by FastAPI   |        |
-| ✅ Clean and modular codebase                 |        |
-
----
-
-Let me know if you want this as an actual `README.md` file or need help zipping the final repo.
