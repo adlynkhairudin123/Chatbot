@@ -18,7 +18,7 @@ def controller(action_string: str):
 
     if action_string.startswith("ACTION -> ask:"):
         q = action_string.replace("ACTION -> ask:", "").strip()
-        return f"🤔 {q}"
+        return f" {q}"
 
     elif action_string.startswith("ACTION -> answer:"):
         ans = action_string.replace("ACTION -> answer:", "").strip()

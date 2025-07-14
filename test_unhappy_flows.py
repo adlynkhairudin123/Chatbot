@@ -13,12 +13,12 @@ def test_missing_outlets_query():
     print(res.json())
 
 def test_simulated_crash():
-    print("\n💥 Simulated crash test:")
+    print("\n Simulated crash test:")
     res = requests.get(f"{BASE_URL}/products", params={"query": "please crash"})
     print(res.json())
 
 def test_sql_injection():
-    print("\n🔓 SQL injection attempt:")
+    print("\n SQL injection attempt:")
     payload = "' OR 1=1 --"
     res = requests.get(f"{BASE_URL}/outlets", params={"query": payload})
     print(res.json())

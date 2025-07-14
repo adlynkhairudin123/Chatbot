@@ -3,13 +3,13 @@ import requests
 # Test /products endpoint
 product_query = "Do you have a ZUS tumbler?"
 product_res = requests.get("http://127.0.0.1:8000/api/products", params={"query": product_query})
-print("🔍 /products response:")
+print(" /products response:")
 print(product_res.json())
 
 # Test /outlets endpoint
 outlet_query = "List all outlets in Selangor"
 outlet_res = requests.get("http://127.0.0.1:8000/api/outlets", params={"query": outlet_query})
-print("\n🏬 /outlets response:")
+print("\n /outlets response:")
 print(outlet_res.json())
 
 # Failure test - products
@@ -24,5 +24,5 @@ bad_outlet_res = requests.get("http://127.0.0.1:8000/api/outlets", params={"quer
 print("\n❌ /outlets failure:")
 print(bad_outlet_res.json())
 
-# run_test("/products", "please crash", "💥 Simulated crash")
+# run_test("/products", "please crash", " Simulated crash")
 
