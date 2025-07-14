@@ -1,10 +1,17 @@
+from dotenv import load_dotenv
 import os
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 
-# Step 1: Set OpenRouter credentials
-os.environ["OPENAI_API_KEY"] = "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"
-os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1" #use OpenRouter's backend instead. OpenAi's default: https://api.openai.com/v1
+# Step 1: Use environment variables safely
+load_dotenv()  # Load environment variables from .env
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_BASE = os.getenv("OPENAI_API_BASE", "https://openrouter.ai/api/v1")
+
+# Set globally for langchain
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+os.environ["OPENAI_API_BASE"] = OPENAI_API_BASE
 
 # Step 2: Define the model
 llm = ChatOpenAI(

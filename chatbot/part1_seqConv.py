@@ -1,10 +1,15 @@
-from langchain_openai import ChatOpenAI # Even though the package is langchain-openai, OpenRouter works because it mimics OpenAI's API interface.
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain.memory import ConversationBufferMemory
-# from langchain_core.memory import InMemoryChatMessageHistory
-from config import llm, prompt # shared config
+
+from config import llm, prompt  # shared config
+from config import OPENAI_API_KEY, OPENAI_API_BASE  # loaded from .env
 
 # Step 4: Wrap the model and prompt into a runnable
 chain = prompt | llm

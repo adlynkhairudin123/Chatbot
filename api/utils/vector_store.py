@@ -1,6 +1,6 @@
 import json
 from langchain_community.vectorstores import FAISS
-from chatbot.config import * 
+from config import * 
 # from langchain_openai import OpenAIEmbeddings
 # from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_community.embeddings import HuggingFaceEmbeddings

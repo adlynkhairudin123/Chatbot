@@ -1,7 +1,13 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from langchain_core.runnables import RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
 from config import llm, toolLogic_prompt
 from tool_router import route_tool_call
+from config import OPENAI_API_KEY, OPENAI_API_BASE  # Loads and sets env vars globally
+from langchain_openai import ChatOpenAI
 
 # --- Chain: prompt → llm → output parser ---
 planner_chain = toolLogic_prompt | llm | StrOutputParser()

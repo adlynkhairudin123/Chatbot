@@ -1,7 +1,13 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from langchain_core.runnables import RunnableLambda 
 from langchain_core.output_parsers import StrOutputParser
 from langchain.memory import ConversationBufferMemory
-from config import llm, planner_prompt 
+from config import llm, planner_prompt
+from config import OPENAI_API_KEY, OPENAI_API_BASE  # Loads and sets env vars globally
+from langchain_openai import ChatOpenAI
 
 # === Planning logic ===
 planner_chain = planner_prompt | llm | StrOutputParser()
@@ -13,7 +19,7 @@ def controller(action_string: str):
 
     if normalized.startswith("action: ask:"):
         follow_up = action_string.split("ask:")[-1].strip()
-        return f"(Planner decided to ask more) 🤔: {follow_up}"
+        return f"(Planner decided to ask more) : {follow_up}"
 
     elif normalized.startswith("action: answer:"):
         answer = action_string.split("answer:")[-1].strip()
@@ -24,7 +30,7 @@ def controller(action_string: str):
         return f"(Planner decided to call a tool) 🛠️: [Simulated Tool Call] {tool_instruction}"
 
     elif "finish" in normalized:
-        return "(Planner decided to end the conversation) 👋"
+        return "(Planner decided to end the conversation) "
 
     else:
         return "(Planner failed to parse intent.) ❌"
