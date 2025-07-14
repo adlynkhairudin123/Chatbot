@@ -1,7 +1,7 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from api.routes import products
 from api.routes import outlets
-from fastapi.responses import HTMLResponse
 
 app = FastAPI(
     title="ZUS Coffee Chatbot API",
@@ -9,10 +9,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Register routes
+# Register API routes
 app.include_router(products.router, prefix="/api", tags=["products"])
 app.include_router(outlets.router, prefix="/api", tags=["outlets"])
 
+# Add root route to avoid 404
 @app.get("/", response_class=HTMLResponse)
 async def root():
     return """
