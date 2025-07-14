@@ -1,94 +1,119 @@
-# 🧠 AdlynKhairudin\_Mindhive\_Chatbot
-
-Custom RAG-based Chatbot using FastAPI for ZUS Coffee use case.
+Great! Here's a clean and professional `README.md` you can include in your FastAPI project repo for **Part 4: Custom API & RAG Integration**:
 
 ---
 
-## 🚀 Project Structure
+## 🧠 ZUS Chatbot — Custom API & RAG Integration
+
+This FastAPI project implements two smart retrieval endpoints using Retrieval-Augmented Generation (RAG) and Text-to-SQL, focused on ZUS Coffee's product and outlet information.
+
+---
+
+### 📌 Endpoints
+
+#### 1. `/api/products?query=...`
+
+**Purpose:**
+Answers product-related questions (specifically Drinkware) using a vector store and AI summarization.
+
+**Tech Stack:**
+
+* 🧠 Vector DB: FAISS
+* 🔍 Embedding: `sentence-transformers/all-MiniLM-L6-v2`
+* 🗣️ LLM: Local GPT-2 using HuggingFace pipeline
+
+**Example Query:**
 
 ```
-AdlynKhairudin_Mindhive_Chatbot/
-├── api/
-│   ├── main.py                  # FastAPI app entry point
-│   ├── routes/
-│   │   ├── products.py         # /products?query=...
-│   │   └── outlets.py          # /outlets?query=...
-│   └── utils/
-│       ├── ingest_products.py  # Vector store ingestion script
-│       └── scrape_outlets.py   # Scraper to populate SQLite DB
-├── chatbot/
-│   └── config.py               # API keys or env vars
-├── api/utils/
-│   ├── faiss_index/            # Saved vectorstore index
-│   └── outlets.db              # SQLite DB with outlet info
-├── test_chatbot.py             # Sample test script to query endpoints
-├── requirements.txt
-└── README.md
+GET /api/products?query=Do you have a ZUS tumbler?
+```
+
+**Response:**
+
+```json
+{
+  "query": "Do you have a ZUS tumbler?",
+  "answer": "ZUS All Day Cup is one of the available tumbler products..."
+}
+```
+
+**Failure Modes:**
+
+* Empty query
+* No relevant documents
+
+---
+
+#### 2. `/api/outlets?query=...`
+
+**Purpose:**
+Translates natural language queries into SQL to retrieve outlet information.
+
+**Tech Stack:**
+
+* 🗃 SQLite database (`outlets.db`)
+* 🧠 Custom keyword-matching logic to simulate Text2SQL
+
+**Example Queries:**
+
+```
+GET /api/outlets?query=List all outlets in Selangor
+GET /api/outlets?query=How many outlets are on the moon?
+```
+
+**Response (Success):**
+
+```json
+{
+  "query": "List all outlets in Selangor",
+  "results": [
+    {"id": 1, "name": "ZUS Coffee – AEON Mall", "state": "Kuala Lumpur / Selangor", ...}
+  ]
+}
+```
+
+**Response (Failure):**
+
+```json
+{
+  "query": "How many outlets are on the moon?",
+  "answer": "No outlets found matching that location."
+}
 ```
 
 ---
 
-## 📦 Setup Instructions
+### 📂 Project Structure
 
-### 1. Create & Activate Virtual Environment
-
-```bash
-python -m venv venv
-venv\Scripts\activate  # On Windows
+```
+api/
+├── main.py                  # FastAPI app entry point
+├── routes/
+│   ├── products.py          # /products endpoint
+│   └── outlets.py           # /outlets endpoint
+├── utils/
+│   ├── faiss_index/         # Pre-built FAISS vector store
+│   └── outlets.db           # SQLite database of outlets
+test_chatbot.py              # Endpoint tester script
+README.md                    # Project overview
 ```
 
-### 2. Install Dependencies
+---
+
+### ✅ How to Run
+
+1. **Install dependencies**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-If `requirements.txt` is missing, install these manually:
-
-```bash
-pip install fastapi uvicorn langchain openai transformers sentence-transformers sqlite-utils requests
-```
-
----
-
-## 🛠️ Preprocessing
-
-### ✅ Ingest Products into Vector Store
-
-```bash
-python api/utils/ingest_products.py
-```
-
-Stores `products.json` data as a FAISS vector index in `api/utils/faiss_index/`
-
-### ✅ Scrape and Save Outlets into SQLite
-
-```bash
-python api/utils/scrape_outlets.py
-```
-
-Creates/updates `api/utils/outlets.db` containing outlet information.
-
----
-
-## ⚡ Run FastAPI Server
+2. **Run the API**
 
 ```bash
 uvicorn api.main:app --reload
 ```
 
-Visit docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-
----
-
-## 📡 Test API Endpoints
-
-### Use Postman or Browser:
-
-* `GET /products?query=Do you have a ZUS tumbler?`
-* `GET /outlets?query=List all outlets in Selangor`
-
-### Or Run:
+3. **Test using script**
 
 ```bash
 python test_chatbot.py
@@ -96,57 +121,25 @@ python test_chatbot.py
 
 ---
 
-## ✅ Deliverables Checklist
+### 📘 Sample Transcript (from `test_chatbot.py`)
 
-* [x] `/products` vector search endpoint (RAG)
-* [x] `/outlets` Text2SQL endpoint using SQLite
-* [x] Ingestion scripts for vector store & SQLite
-* [x] Working FastAPI server with both endpoints
-* [x] Sample test script and transcripts showing success/failure
-
----
-
-## 📎 Sample Queries
-
-### /products
-
-```
-Query: Do you have a ZUS tumbler?
-Answer: Yes, we do. [summary with matching drinkware info]
-```
-
-### /outlets
-
-```
-Query: List all outlets in Selangor
-Answer: Table or list of all ZUS Coffee outlets in Selangor
-```
+* `/products` success ✅
+* `/outlets` success ✅
+* `/products` empty query ❌
+* `/outlets` invalid location ❌
 
 ---
 
-## 🙋 FAQ
+### 📦 Deliverables Summary
 
-**Q: I get 'no such table: outlets'?**
-A: Run `scrape_outlets.py` to generate the `outlets.db`.
-
-**Q: I get FAISS load errors?**
-A: Ensure `faiss_index/` exists by running `ingest_products.py`
-
-**Q: I get prompt or token length warnings?**
-A: Use `max_new_tokens` instead of `max_length` for better control.
-
----
-
-## 🧠 Tech Stack
-
-* FastAPI
-* FAISS
-* HuggingFace Transformers
-* SQLite
-* LangChain
+| Item                                         | Status |
+| -------------------------------------------- | ------ |
+| ✅ `/products` endpoint with FAISS + GPT-2    |        |
+| ✅ `/outlets` endpoint with SQLite + Text2SQL |        |
+| ✅ Test script with 4 scenarios               |        |
+| ✅ OpenAPI schema auto-generated by FastAPI   |        |
+| ✅ Clean and modular codebase                 |        |
 
 ---
 
-## 👩‍💻 Author
-
-Adlyn Khairudin – Mindhive Chatbot Technical Assessment
+Let me know if you want this as an actual `README.md` file or need help zipping the final repo.
