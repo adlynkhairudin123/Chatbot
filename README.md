@@ -163,20 +163,8 @@ GET /api/outlets?query=Outlets in Selangor?
 
 ```
 
-\[User Query]
-|
-v
-┌─────────────┐
-│ FastAPI App │
-└────┬────────┘
-│
-┌────▼────┐       ┌──────────────────┐
-│ /products│────▶│ RAG Chain (FAISS + LLM) │
-└──────────┘       └──────────────────┘
-│
-┌────▼────┐       ┌────────────────────┐
-│ /outlets│────▶│ SQLite Text2SQL Logic │
-└──────────┘       └────────────────────┘
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/e9d75ab9-72b2-4842-83d8-ea39f641c02b" />
+
 
 ````
 
